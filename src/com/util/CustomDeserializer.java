@@ -1,38 +1,34 @@
 package com.util;
 
-
-import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.model.Model;
 
-public class JsonParser {
-	
-	public Model parse(String response) throws FileNotFoundException {
-		//FileInputStream fin = new FileInputStream("employee.txt"); 
-		//InputStreamReader isr = new InputStreamReader(fin);
-		//JsonReader jsonReader = new JsonReader(response);
-		JsonElement jsObject = new com.google.gson.JsonParser().parse(response);
-		System.out.println(jsObject.isJsonObject() + ", " + jsObject.isJsonArray());
-		System.out.println(jsObject.toString());
-		
-		HashMap<String, List<Object>> json = parseJson(jsObject, new HashMap<String,List<Object>>());
-		System.out.println(json.toString());
+public class CustomDeserializer implements JsonDeserializer<Model> {
+
+	@Override
+	public Model deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
+		// TODO Auto-generated method stub
+		HashMap<String, List<Object>> json = parseJson(arg0, new HashMap<String,List<Object>>());
+		System.out.println("Deserializer : "+json.toString());
 		Model model = new Model();
 		model.setKeys(json.keySet());
 		model.setKeyValue(json.entrySet());
 		model.setTotal(json.size());
 		return model;
 	}
-
+	
 	private HashMap<String,List<Object>> parseJson(JsonElement jsObject, HashMap<String,List<Object>> model) {
 		// TODO Auto-generated method stub
 		Set<Entry<String, JsonElement>> entries = jsObject.getAsJsonObject().entrySet();
@@ -84,7 +80,5 @@ public class JsonParser {
 		}
 		return model;
 	}
-	
-	
 
 }
